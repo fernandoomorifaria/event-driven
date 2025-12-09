@@ -55,16 +55,17 @@ module CompositionRoot =
         let server = configuration.["Kafka:BootstrapServer"]
         let config = ProducerConfig(BootstrapServers = server)
 
-        ProducerBuilder<Null, string>(config).Build()
+        ProducerBuilder<string, string>(config).Build()
 
-    let private createStartSaga (configuration: IConfiguration) (producer: IProducer<Null, string>) =
+    let private createStartSaga (configuration: IConfiguration) (producer: IProducer<string, string>) =
         let topic = configuration.["Kafka:Topics:Orchestrator"]
 
         fun (command: CreateOrderCommand) ->
             task {
+                let key = command.OrderId.ToString()
                 let json = JsonSerializer.Serialize command
 
-                let message = Message<Null, string>(Value = json)
+                let message = Message<string, string>(Key = key, Value = json)
 
                 let! _ = producer.ProduceAsync(topic, message)
 
