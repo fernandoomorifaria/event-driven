@@ -17,12 +17,12 @@ module Program =
         let server = builder.Configuration.["Kafka:BootstrapServer"]
 
         (* TODO: Read from appsettings *)
-        let topics = [| "orders" |]
+        let topics = [| "orders"; "inventory" |]
 
         let producer (server: string) =
             let config = ProducerConfig(BootstrapServers = server)
 
-            ProducerBuilder<Null, string>(config).Build()
+            ProducerBuilder<string, string>(config).Build()
 
         let consumer (server: string) (topics: string seq) =
             let config =
@@ -33,7 +33,7 @@ module Program =
                     EnableAutoCommit = true
                 )
 
-            let consumer = ConsumerBuilder<Null, string>(config).Build()
+            let consumer = ConsumerBuilder<string, string>(config).Build()
 
             consumer.Subscribe topics
 

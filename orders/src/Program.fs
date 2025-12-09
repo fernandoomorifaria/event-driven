@@ -2,6 +2,7 @@ module Orders.App
 
 open System
 open System.Text.Json
+open System.Text.Json.Serialization
 open System.Threading.Tasks
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Http
@@ -11,9 +12,16 @@ open Confluent.Kafka
 open Giraffe
 
 type CreateOrderCommand =
-    { OrderId: Guid
+    { [<JsonPropertyName("orderId")>]
+      OrderId: Guid
+
+      [<JsonPropertyName("customerId")>]
       CustomerId: int
+
+      [<JsonPropertyName("productId")>]
       ProductId: int
+
+      [<JsonPropertyName("amount")>]
       Amount: decimal }
 
 type StartSaga = CreateOrderCommand -> Task<unit>
