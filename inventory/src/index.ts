@@ -15,11 +15,11 @@ const consumer = new KafkaJS.Kafka().consumer({
   'group.id': 'inventory-consumer'
 });
 
-const topic = process.env.KAFKA_TOPIC
+const topic = process.env.KAFKA_TOPIC;
 
 await producer.connect();
 await consumer.connect();
-// TODO: Read from environment variable
+
 await consumer.subscribe({ topics: [topic] });
 
 interface Order {
@@ -42,8 +42,6 @@ await consumer.run({
     const productId = sagaMessage.order.productId;
 
     if (sagaMessage.type === 'ReserveInventory') {
-      // TODO: Check and update database
-
       const [result] = await db
         .select({ quantity: productsTable.quantity })
         .from(productsTable)
