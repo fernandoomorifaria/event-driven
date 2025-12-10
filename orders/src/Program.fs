@@ -43,7 +43,7 @@ module CompositionRoot =
         ProducerBuilder<string, string>(config).Build()
 
     let private createStartSaga (configuration: IConfiguration) (producer: IProducer<string, string>) =
-        let topic = configuration.["Kafka:Topics:Orchestrator"]
+        let topic = configuration.["Kafka:Topic"]
 
         fun (command: CreateOrderCommand) ->
             task {
