@@ -1,24 +1,26 @@
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { productsTable } from './db/schema.ts';
-import { Kafka } from '@confluentinc/kafka-javascript/types/kafkajs.js';
+import { KafkaJS } from '@confluentinc/kafka-javascript';
 import { eq, sql } from 'drizzle-orm';
 
 const db = drizzle(process.env.DATABASE_URL);
 
-const producer = new Kafka().producer({
+const producer = new KafkaJS.Kafka().producer({
   'bootstrap.servers': process.env.KAFKA_SERVER
 });
 
-const consumer = new Kafka().consumer({
+const consumer = new KafkaJS.Kafka().consumer({
   'bootstrap.servers': process.env.KAFKA_SERVER,
   'group.id': 'inventory-consumer'
 });
 
+const topic = process.env.KAFKA_TOPIC
+
 await producer.connect();
 await consumer.connect();
 // TODO: Read from environment variable
-await consumer.subscribe({ topics: [""] });
+await consumer.subscribe({ topics: [topic] });
 
 interface Order {
   orderId: string;
@@ -33,7 +35,7 @@ interface SagaMessage {
   order: Order;
 }
 
-consumer.run({
+await consumer.run({
   eachMessage: async ({ topic, partition, message }) => {
     const sagaMessage: SagaMessage = JSON.parse(message.value.toString());
     const orderId = sagaMessage.order.orderId;
@@ -80,6 +82,3 @@ consumer.run({
     }
   }
 });
-
-await producer.disconnect();
-await consumer.disconnect();
