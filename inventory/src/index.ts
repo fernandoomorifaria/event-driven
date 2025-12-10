@@ -31,6 +31,7 @@ interface Order {
 
 interface SagaMessage {
   sagaId: string;
+  state: string;
   type: string;
   order: Order;
 }
