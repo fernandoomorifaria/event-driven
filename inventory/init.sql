@@ -6,10 +6,10 @@ CREATE TABLE "products" (
 	CONSTRAINT "quantity_check" CHECK ("products"."quantity" >= 0)
 );
 
-INSERT INTO "products" (
-  "name",
-  "quantity"
+INSERT INTO products (
+  name,
+  quantity
 ) VALUES (
-  "Plans for Constructing an Orgone Energy Accumulator",
+  'Plans for Constructing an Orgone Energy Accumulator', 
   3
 );
