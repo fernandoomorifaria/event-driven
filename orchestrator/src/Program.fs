@@ -10,12 +10,12 @@ open Types
 
 module Program =
     module CompositionRoot =
-        let creatProducer (server: string) =
+        let private creatProducer (server: string) =
             let config = ProducerConfig(BootstrapServers = server)
 
             ProducerBuilder<string, string>(config).Build()
 
-        let createConsumer (server: string) (topics: string seq) =
+        let private createConsumer (server: string) (topics: string seq) =
             let config =
                 ConsumerConfig(BootstrapServers = server, GroupId = "orchestrator-consumer")
 
