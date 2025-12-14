@@ -13,9 +13,14 @@ curl -X POST -H "Content-Type: application/json" \
 ### Checking order status
 
 ```bash
-curl -X GET http://localhost:5000/order/<order-id>
+curl -X GET http://localhost:5000/order/{orderId}
 ```
 
+### Checking saga status
+
+```bash
+curl -X GET http://localhost:5001/saga/{sagaId}
+```
 
 ## Notes
 
