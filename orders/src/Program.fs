@@ -12,17 +12,6 @@ open Handlers
 open Thoth.Json.Net
 open Types
 
-let webApp (environment: Environment) =
-    choose
-        [ GET >=> choose [ routef "/order/%O" (getOrderHandler environment.GetOrder) ]
-
-          POST
-          >=> choose
-                  [ route "/order"
-                    >=> createOrderHandler environment.CreateOrder environment.StartSaga ]
-
-          setStatusCode 404 >=> text "Not Found" ]
-
 module CompositionRoot =
     let private createProducer (configuration: IConfiguration) =
         let server = configuration.["Kafka:BootstrapServer"]
@@ -68,6 +57,17 @@ module CompositionRoot =
           GetOrder = get connection
           CreateOrder = create connection
           UpdateOrder = update connection }
+
+let webApp (environment: Environment) =
+    choose
+        [ GET >=> choose [ routef "/order/%O" (getOrderHandler environment.GetOrder) ]
+
+          POST
+          >=> choose
+                  [ route "/order"
+                    >=> createOrderHandler environment.CreateOrder environment.StartSaga ]
+
+          setStatusCode 404 >=> text "Not Found" ]
 
 [<EntryPoint>]
 let main args =
