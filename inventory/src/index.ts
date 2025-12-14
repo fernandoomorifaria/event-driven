@@ -37,7 +37,7 @@ interface Reply {
 }
 
 await consumer.run({
-  eachMessage: async ({ topic, partition, message }) => {
+  eachMessage: async ({ message }) => {
     const command: InventoryCommand = JSON.parse(message.value.toString());
     const orderId = command.orderId;
     const productId = command.productId;
@@ -46,7 +46,7 @@ await consumer.run({
       sagaId: command.sagaId,
       orderId: orderId,
       type: ''
-    }
+    };
 
     if (command.type === 'inventory.reserve') {
       const [result] = await db
@@ -70,9 +70,9 @@ await consumer.run({
               value: JSON.stringify(reply)
             }
           ]
-        })
+        });
       } else {
-        reply.type = 'inventory.out_of_stock'
+        reply.type = 'inventory.out_of_stock';
 
         await producer.send({
           topic: replyTopic,
@@ -100,7 +100,7 @@ await consumer.run({
             value: JSON.stringify(reply)
           }
         ]
-      })
+      });
     }
   }
 });
