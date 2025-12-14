@@ -9,7 +9,7 @@ COPY ./src .
 
 RUN dotnet publish -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/runtime:10.0-noble
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble
 
 WORKDIR /app
 

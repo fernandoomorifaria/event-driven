@@ -12,7 +12,7 @@ type Worker(environment: Environment) =
 
     let complete (saga: Saga) =
         task {
-            do! Database.update environment.Connection { saga with State = Completed }
+            do! environment.UpdateSaga { saga with State = Completed }
 
             environment.Logger.LogInformation("Saga {id} completed", saga.SagaId)
 
@@ -27,7 +27,7 @@ type Worker(environment: Environment) =
 
     let fail (saga: Saga) =
         task {
-            do! Database.update environment.Connection { saga with State = Failed }
+            do! environment.UpdateSaga { saga with State = Failed }
 
             environment.Logger.LogInformation("Saga {id} failed", saga.SagaId)
 
@@ -74,7 +74,7 @@ type Worker(environment: Environment) =
         task {
             environment.Logger.LogInformation "Getting saga from reply"
 
-            let! saga = Database.get environment.Connection reply.SagaId
+            let! saga = environment.QuerySaga reply.SagaId
 
             match saga with
             | None -> ()
@@ -98,7 +98,7 @@ type Worker(environment: Environment) =
 
             environment.Logger.LogInformation "Creating Saga"
 
-            do! Database.create environment.Connection saga
+            do! environment.CreateSaga saga
 
             let order = saga.Order
 

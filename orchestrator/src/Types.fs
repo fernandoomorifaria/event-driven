@@ -6,12 +6,6 @@ open System.Threading.Tasks
 open Microsoft.Extensions.Logging
 open Confluent.Kafka
 
-type Environment =
-    { Publish: string -> string -> string -> Task<unit>
-      Consumer: IConsumer<string, string>
-      Connection: IDbConnection
-      Logger: ILogger }
-
 type Order =
     { OrderId: Guid
       CustomerId: int
@@ -82,3 +76,17 @@ type OrderStatus =
     | Cancelled
 
 type OrderEvent = { OrderId: Guid; Status: OrderStatus }
+
+type QuerySaga = Guid -> Task<Saga option>
+
+type CreateSaga = Saga -> Task<unit>
+
+type UpdateSaga = Saga -> Task<unit>
+
+type Environment =
+    { Publish: string -> string -> string -> Task<unit>
+      Consumer: IConsumer<string, string>
+      QuerySaga: QuerySaga
+      CreateSaga: CreateSaga
+      UpdateSaga: UpdateSaga
+      Logger: ILogger }

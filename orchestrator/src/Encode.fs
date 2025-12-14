@@ -50,6 +50,12 @@ let state (state: State) =
     | Completed -> "Completed"
     | Failed -> "Failed"
 
+let saga (s: Saga) =
+    Encode.object
+        [ "sagaId", Encode.guid s.SagaId
+          "state", Encode.string (state s.State)
+          "order", order s.Order ]
+
 let status (status: OrderStatus) =
     match status with
     | Placed -> Encode.string "placed"

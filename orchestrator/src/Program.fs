@@ -1,12 +1,15 @@
 namespace Orchestrator
 
+open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 open Confluent.Kafka
+open Giraffe
 open Npgsql
 open Types
+open Handlers
 
 module Program =
     module CompositionRoot =
@@ -52,21 +55,35 @@ module Program =
                     ()
                 }
 
+            let querySaga = Database.get connection
+            let createSaga = Database.create connection
+            let updateSaga = Database.update connection
+
             { Publish = publish
               Consumer = consumer
-              Connection = connection
+              QuerySaga = querySaga
+              CreateSaga = createSaga
+              UpdateSaga = updateSaga
               Logger = logger }
 
-
+    let webApp (environment: Environment) =
+        choose
+            [ GET >=> choose [ routef "/saga/%O" (getSagaHandler environment.QuerySaga) ]
+              setStatusCode 404 >=> text "Not Found" ]
 
     [<EntryPoint>]
     let main args =
-        let builder = Host.CreateApplicationBuilder args
+        let builder = WebApplication.CreateBuilder args
 
         let environment = CompositionRoot.compose builder.Configuration
 
         builder.Services.AddHostedService(fun _ -> new Worker(environment)) |> ignore
+        builder.Services.AddGiraffe() |> ignore
 
-        builder.Build().Run()
+        let app = builder.Build()
+
+        app.UseGiraffe(webApp environment)
+
+        app.Run()
 
         0

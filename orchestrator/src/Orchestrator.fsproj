@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+<Project Sdk="Microsoft.NET.Sdk.Web"> 
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -11,6 +11,7 @@
     <Compile Include="Decode.fs" />
     <Compile Include="Encode.fs" />
     <Compile Include="Database.fs" />
+    <Compile Include="Handlers.fs" />
     <Compile Include="Worker.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
@@ -18,6 +19,7 @@
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="2.12.0" />
     <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="Giraffe" Version="8.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
     <PackageReference Include="Npgsql" Version="10.0.0" />
     <PackageReference Include="Thoth.Json.Net" Version="12.0.0" />
