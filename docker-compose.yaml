@@ -86,6 +86,10 @@ services:
     build:
       context: ./orchestrator/
     container_name: orchestrator
+    ports:
+      - 5001:5001
+    environment:
+      ASPNETCORE_URLS: http://+:5001
     depends_on:
       kafka:
         condition: service_healthy
