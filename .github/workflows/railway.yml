@@ -1,0 +1,34 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
+    env:
+      PAYMENTS_SERVICE: payments
+      INVENTORY_SERVICE: inventory
+      ORCHESTRATOR_SERVICE: orchestrator
+      ORDERS_SERVICE: orders
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Deploy Payments
+        run: railway up --service=${{ env.PAYMENTS_SERVICE }}
+        working-directory: ./payments
+      
+      - name: Deploy Inventory
+        run: railway up --service=${{ env.INVENTORY_SERVICE }}
+        working-directory: ./inventory
+      
+      - name: Deploy Orchestrator
+        run: railway up --service=${{ env.ORCHESTRATOR_SERVICE }}
+        working-directory: ./orchestrator
+
+      - name: Deploy Orders
+        run: railway up --service=${{ env.ORDERS_SERVICE }}
+        working-directory: ./orders
