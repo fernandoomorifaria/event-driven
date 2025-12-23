@@ -24,4 +24,5 @@ curl -X GET http://localhost:5001/saga/{sagaId}
 
 ## Notes
 
-I know, I know, sending `Amount` isn't a good idea because the user can change it, but this is just for the sake of learning.
+- I know, I know, sending `Amount` isn't a good idea because the user can change it, but this is just for the sake of learning.
+- I should have used a library for data access such as `Dapper.FSharp` or `Npgsql.FSharp`, you know, there's a lot of boilerplate code in my `Database.fs` files, I'll fix this in the next projects.
